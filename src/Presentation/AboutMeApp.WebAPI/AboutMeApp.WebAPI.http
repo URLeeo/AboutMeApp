@@ -1,0 +1,6 @@
+@AboutMeApp.WebAPI_HostAddress = http://localhost:5179
+
+GET {{AboutMeApp.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

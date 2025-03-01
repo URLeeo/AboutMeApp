@@ -15,4 +15,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\AboutMeApp.Application\AboutMeApp.Application.csproj" />
+  </ItemGroup>
+
 </Project>

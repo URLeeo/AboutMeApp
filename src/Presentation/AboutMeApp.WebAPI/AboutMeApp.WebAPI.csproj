@@ -10,4 +10,18 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\AboutMeApp.Application\AboutMeApp.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\AboutMeApp.Infrastructure\AboutMeApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\AboutMeApp.Persistence\AboutMeApp.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

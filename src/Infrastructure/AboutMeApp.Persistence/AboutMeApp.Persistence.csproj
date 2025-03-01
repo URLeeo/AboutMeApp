@@ -17,9 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contexts\" />
     <Folder Include="Implementations\Services\" />
     <Folder Include="Implementations\Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\AboutMeApp.Application\AboutMeApp.Application.csproj" />
+    <ProjectReference Include="..\..\Core\AboutMeApp.Domain\AboutMeApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

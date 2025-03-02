@@ -14,8 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Services\" />
-    <Folder Include="Dtos\Certificate\" />
     <Folder Include="Dtos\Education\" />
     <Folder Include="Dtos\Experience\" />
     <Folder Include="Dtos\Identity\" />
@@ -23,7 +21,6 @@
     <Folder Include="Dtos\Template\" />
     <Folder Include="Dtos\SocialMedia\" />
     <Folder Include="Profiles\" />
-    <Folder Include="Validations\Utilities\" />
   </ItemGroup>
 
   <ItemGroup>

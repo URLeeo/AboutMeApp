@@ -1,4 +1,6 @@
-﻿using AboutMeApp.Domain.Entities;
+﻿using AboutMeApp.Application.Abstractions.Repositories;
+using AboutMeApp.Application.Abstractions.Services;
+using AboutMeApp.Domain.Entities;
 using AboutMeApp.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +25,10 @@ public static class ServiceRegistrationExtension
         })
         .AddRoles<Role>()
         .AddEntityFrameworkStores<AboutMeAppDbContext>();
+
+        services.AddScoped<ICertificateRepository, ICertificateRepository>();
+        services.AddScoped<ICertificateService, ICertificateService>();
+
         return services;
     }
 }

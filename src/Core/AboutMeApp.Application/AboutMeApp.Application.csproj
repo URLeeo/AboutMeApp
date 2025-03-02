@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\Services\" />
-    <Folder Include="Abstractions\Repositories\" />
     <Folder Include="Dtos\Certificate\" />
     <Folder Include="Dtos\Education\" />
     <Folder Include="Dtos\Experience\" />

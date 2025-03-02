@@ -5,6 +5,7 @@ using AboutMeApp.Common.Shared;
 using AboutMeApp.Domain.Entities;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -14,15 +15,18 @@ public class CertificateService : ICertificateService
 {
     private ICertificateRepository _certificateRepository { get; }
     private IMapper _mapper { get; }
+
+    private UserManager<User> _userManager { get; }
     private IValidator<CertificateCreateDto> _createValidator { get; }
     private IValidator<CertificateUpdateDto> _updateValidator { get; }
 
-    public CertificateService(ICertificateRepository certificateRepository, IMapper mapper, IValidator<CertificateCreateDto> createValidator, IValidator<CertificateUpdateDto> updateValidator)
+    public CertificateService(ICertificateRepository certificateRepository, IMapper mapper, IValidator<CertificateCreateDto> createValidator, IValidator<CertificateUpdateDto> updateValidator, UserManager<User> userManager)
     {
         _certificateRepository = certificateRepository;
         _mapper = mapper;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _userManager = userManager;
     }
     public async Task<BaseResponse<CertificateCreateDto>> CreateAsync(CertificateCreateDto certificateCreateDto)
     {
@@ -36,8 +40,20 @@ public class CertificateService : ICertificateService
                 Data = null
             };
         }
+
+        var userExists = await _userManager.FindByIdAsync(certificateCreateDto.UserId.ToString());
+        if (userExists == null)
+        {
+            return new BaseResponse<CertificateCreateDto>
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Message = "User does not exist.",
+                Data = null
+            };
+        }
+
         var existedCertificate = await _certificateRepository.GetByFilter(
-            c => EF.Functions.Like(c.Title, certificateCreateDto.Title) && !c.IsDeleted,
+            c => c.Title == certificateCreateDto.Title && !c.IsDeleted,
             isTracking: false);
 
         if (existedCertificate != null)
@@ -73,6 +89,7 @@ public class CertificateService : ICertificateService
             };
         }
         certificate.IsDeleted = true;
+        certificate.ModifiedDate = DateTime.UtcNow;
         await _certificateRepository.SaveChangesAsync();
         return new BaseResponse<object>
         {
@@ -134,8 +151,11 @@ public class CertificateService : ICertificateService
 
     public async Task<BaseResponse<CertificateGetDto>> GetByIdAsync(Guid id)
     {
-        var certificate = await _certificateRepository.GetByIdAsync(id);
-        if (certificate == null || certificate.IsDeleted)
+        var certificate = await _certificateRepository.GetByFilter(
+            expression: c => c.Id == id && !c.IsDeleted,
+            includes: new[] { "User" });
+
+        if (certificate == null)
         {
             return new BaseResponse<CertificateGetDto>
             {
@@ -162,6 +182,7 @@ public class CertificateService : ICertificateService
                 Data = null
             };
         }
+
         if (pageNumber < 1 || pageSize < 1)
         {
             return new BaseResponse<Pagination<CertificateGetDto>>
@@ -171,17 +192,29 @@ public class CertificateService : ICertificateService
                 Data = null
             };
         }
+
         IQueryable<Certificate> query = _certificateRepository.GetAll(
-            expression: c => !c.IsDeleted && c.Title.Contains(name, StringComparison.OrdinalIgnoreCase),
+            expression: c => !c.IsDeleted && EF.Functions.Like(c.Title, $"%{name}%"),
             includes: new[] { "User" });
 
         int totalItems = await query.CountAsync();
+
+        if (totalItems == 0)
+        {
+            return new BaseResponse<Pagination<CertificateGetDto>>
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Message = "No certificates found for the given name.",
+                Data = null
+            };
+        }
 
         if (isPaginated)
         {
             int skip = (pageNumber - 1) * pageSize;
             query = query.Skip(skip).Take(pageSize);
         }
+
         List<CertificateGetDto> certificateGetDtos = await query.Select(c => new CertificateGetDto
         {
             Id = c.Id,
@@ -192,6 +225,7 @@ public class CertificateService : ICertificateService
             ExpiryDate = c.ExpiryDate,
             CertificateUrl = c.CertificateUrl
         }).ToListAsync();
+
         return new BaseResponse<Pagination<CertificateGetDto>>
         {
             StatusCode = HttpStatusCode.OK,
@@ -206,6 +240,7 @@ public class CertificateService : ICertificateService
             }
         };
     }
+
 
 
     public async Task<BaseResponse<CertificateUpdateDto>> UpdateAsync(Guid id, CertificateUpdateDto certificateUpdateDto)
@@ -243,7 +278,7 @@ public class CertificateService : ICertificateService
         }
 
         var existedCertificate = await _certificateRepository.GetByFilter(
-            expression: c => c.Title.Equals(certificateUpdateDto.Title, StringComparison.OrdinalIgnoreCase)
+            expression: c => c.Title.ToLower() == certificateUpdateDto.Title.ToLower()
                              && c.Id != id
                              && !c.IsDeleted,
             isTracking: false);

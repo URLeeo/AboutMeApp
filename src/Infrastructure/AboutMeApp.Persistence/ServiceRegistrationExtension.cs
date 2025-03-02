@@ -1,7 +1,12 @@
 ﻿using AboutMeApp.Application.Abstractions.Repositories;
 using AboutMeApp.Application.Abstractions.Services;
+using AboutMeApp.Application.Profiles;
+using AboutMeApp.Application.Validations.Certificate;
 using AboutMeApp.Domain.Entities;
 using AboutMeApp.Persistence.Contexts;
+using AboutMeApp.Persistence.Implementations.Repositories;
+using AboutMeApp.Persistence.Implementations.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +31,11 @@ public static class ServiceRegistrationExtension
         .AddRoles<Role>()
         .AddEntityFrameworkStores<AboutMeAppDbContext>();
 
-        services.AddScoped<ICertificateRepository, ICertificateRepository>();
-        services.AddScoped<ICertificateService, ICertificateService>();
+        services.AddScoped<ICertificateRepository, CertificateRepository>();
+        services.AddScoped<ICertificateService, CertificateService>();
+
+        services.AddAutoMapper(typeof(CertificateProfile).Assembly);
+        services.AddValidatorsFromAssemblyContaining<CertificateUpdateValidator>();
 
         return services;
     }

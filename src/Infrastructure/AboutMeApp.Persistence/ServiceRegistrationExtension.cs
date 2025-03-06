@@ -34,6 +34,9 @@ public static class ServiceRegistrationExtension
         services.AddScoped<ICertificateRepository, CertificateRepository>();
         services.AddScoped<ICertificateService, CertificateService>();
 
+        services.AddScoped<IEducationRepository, EducationRepository>();
+        services.AddScoped<IEducationService, EducationService>();
+
         services.AddAutoMapper(typeof(CertificateProfile).Assembly);
         services.AddValidatorsFromAssemblyContaining<CertificateUpdateValidator>();
 

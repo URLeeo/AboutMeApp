@@ -27,6 +27,7 @@ public class CertificateService : ICertificateService
         _createValidator = createValidator;
         _updateValidator = updateValidator;
         _userManager = userManager;
+
     }
     public async Task<BaseResponse<CertificateCreateDto>> CreateAsync(CertificateCreateDto certificateCreateDto)
     {

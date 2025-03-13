@@ -1,5 +1,6 @@
 ﻿using AboutMeApp.Application.Abstractions.Repositories;
 using AboutMeApp.Application.Abstractions.Services;
+using AboutMeApp.Application.Dtos.Certificate;
 using AboutMeApp.Application.Dtos.Education;
 using AboutMeApp.Common.Shared;
 using AboutMeApp.Domain.Entities;
@@ -14,11 +15,11 @@ namespace AboutMeApp.Persistence.Implementations.Services;
 public class EducationService : IEducationService
 {
     private IEducationRepository _educationRepository { get; }
-    private Mapper _mapper { get; }
+    private IMapper _mapper { get; }
     private UserManager<User> _userManager { get; }
     private IValidator<EducationCreateDto> _createValidator { get; }
     private IValidator<EducationUpdateDto> _updateValidator { get; }
-    public EducationService(IEducationRepository educationRepository, Mapper mapper, UserManager<User> userManager, IValidator<EducationCreateDto> createValidator, IValidator<EducationUpdateDto> updateValidator)
+    public EducationService(IEducationRepository educationRepository, IMapper mapper, UserManager<User> userManager, IValidator<EducationCreateDto> createValidator, IValidator<EducationUpdateDto> updateValidator)
     {
         _educationRepository = educationRepository;
         _mapper = mapper;
@@ -40,16 +41,24 @@ public class EducationService : IEducationService
             };
         }
 
+        var userExists = await _userManager.FindByIdAsync(educationCreateDto.UserProfileId.ToString());
+        if (userExists == null)
+        {
+            return new BaseResponse<EducationCreateDto>
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Message = "User profile does not exist.",
+                Data = null
+            };
+        }
+
         var existedEducation = await _educationRepository.GetByFilter(
-            e => e.SchoolName == educationCreateDto.SchoolName
-            && e.Degree == educationCreateDto.Degree
-            && e.FieldOfStudy == educationCreateDto.FieldOfStudy
-            && !e.IsDeleted
-            && (
-             (educationCreateDto.StartDate >= e.StartDate && educationCreateDto.StartDate <= (e.EndDate ?? DateTime.MaxValue)) ||
-             (educationCreateDto.EndDate.HasValue && e.StartDate <= educationCreateDto.EndDate && (e.EndDate ?? DateTime.MaxValue) >= educationCreateDto.EndDate)
-         ),
-    isTracking: false);
+            e => e.UserProfileId == educationCreateDto.UserProfileId &&
+            e.SchoolName.ToLower() == educationCreateDto.SchoolName.ToLower() &&
+            e.Degree.ToLower() == educationCreateDto.Degree.ToLower() &&
+            e.FieldOfStudy.ToLower() == educationCreateDto.FieldOfStudy.ToLower() &&
+            !e.IsDeleted,
+            isTracking: false);
         if (existedEducation is not null)
         {
             return new BaseResponse<EducationCreateDto>
@@ -187,10 +196,9 @@ public class EducationService : IEducationService
 
         IQueryable<Education> query = _educationRepository.GetAll(
             expression: e => !e.IsDeleted &&
-                         (EF.Functions.Like(e.SchoolName, $"%{name}%") ||
-                          EF.Functions.Like(e.Degree, $"%{name}%") ||
-                          EF.Functions.Like(e.FieldOfStudy, $"%{name}%")),
-            includes: new[] { "User" });
+                 (e.SchoolName.ToLower().Contains(name.ToLower()) ||
+                  e.Degree.ToLower().Contains(name.ToLower()) ||
+                  e.FieldOfStudy.ToLower().Contains(name.ToLower())));
 
         int totalItems = await query.CountAsync();
 
@@ -298,7 +306,7 @@ public class EducationService : IEducationService
         return new BaseResponse<EducationUpdateDto>
         {
             StatusCode = HttpStatusCode.OK,
-            Message = "The education is successfully updated...",
+            Message = "The education is successfully updated.",
             Data = educationUpdateDto
         };
     }

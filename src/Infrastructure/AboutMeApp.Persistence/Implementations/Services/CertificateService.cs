@@ -54,7 +54,7 @@ public class CertificateService : ICertificateService
         }
 
         var existedCertificate = await _certificateRepository.GetByFilter(
-            c => c.Title == certificateCreateDto.Title && !c.IsDeleted,
+            c => c.Title.ToLower() == certificateCreateDto.Title.ToLower() && !c.IsDeleted,
             isTracking: false);
 
         if (existedCertificate != null)
@@ -278,23 +278,27 @@ public class CertificateService : ICertificateService
             };
         }
 
-        var existedCertificate = await _certificateRepository.GetByFilter(
-            expression: c => c.Title.ToLower() == certificateUpdateDto.Title.ToLower()
-                             && c.Id != id
-                             && !c.IsDeleted,
-            isTracking: false);
-
-        if (existedCertificate is not null)
+        if (!string.IsNullOrWhiteSpace(certificateUpdateDto.Title))
         {
-            return new BaseResponse<CertificateUpdateDto>
+            var existedCertificate = await _certificateRepository.GetByFilter(
+                expression: c => c.Title.ToLower() == certificateUpdateDto.Title.ToLower()
+                                 && c.Id != id
+                                 && !c.IsDeleted,
+                isTracking: false);
+
+            if (existedCertificate is not null)
             {
-                StatusCode = HttpStatusCode.BadRequest,
-                Message = $"A certificate with the title '{certificateUpdateDto.Title}' already exists.",
-                Data = null
-            };
+                return new BaseResponse<CertificateUpdateDto>
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = $"A certificate with the title '{certificateUpdateDto.Title}' already exists.",
+                    Data = null
+                };
+            }
+
+            certificate.Title = certificateUpdateDto.Title;
         }
 
-        certificate.Title = certificateUpdateDto.Title ?? certificate.Title;
         certificate.Issuer = certificateUpdateDto.Issuer ?? certificate.Issuer;
         certificate.IssueDate = certificateUpdateDto.IssueDate ?? certificate.IssueDate;
         certificate.ExpiryDate = certificateUpdateDto.ExpiryDate ?? certificate.ExpiryDate;

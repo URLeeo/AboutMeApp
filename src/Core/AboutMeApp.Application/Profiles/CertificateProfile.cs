@@ -1,4 +1,5 @@
 ﻿using AboutMeApp.Application.Dtos.Certificate;
+using AboutMeApp.Common.Shared;
 using AboutMeApp.Domain.Entities;
 using AutoMapper;
 
@@ -13,5 +14,6 @@ public class CertificateProfile : Profile
             .ReverseMap();
         CreateMap<Certificate, CertificateCreateDto>().ReverseMap();
         CreateMap<Certificate, CertificateUpdateDto>().ReverseMap();
+        CreateMap(typeof(Pagination<>), typeof(Pagination<>));
     }
 }

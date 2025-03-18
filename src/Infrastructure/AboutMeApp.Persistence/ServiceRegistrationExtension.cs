@@ -3,6 +3,7 @@ using AboutMeApp.Application.Abstractions.Services;
 using AboutMeApp.Application.Profiles;
 using AboutMeApp.Application.Validations.Certificate;
 using AboutMeApp.Application.Validations.Education;
+using AboutMeApp.Application.Validations.Experience;
 using AboutMeApp.Domain.Entities;
 using AboutMeApp.Persistence.Contexts;
 using AboutMeApp.Persistence.Implementations.Repositories;
@@ -38,11 +39,19 @@ public static class ServiceRegistrationExtension
         services.AddScoped<IEducationRepository, EducationRepository>();
         services.AddScoped<IEducationService, EducationService>();
 
+        services.AddScoped<IExperienceRepository, ExperienceRepository>();
+        services.AddScoped<IExperienceService, ExperienceService>();
+
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddValidatorsFromAssemblyContaining<CertificateUpdateValidator>();
+        services.AddValidatorsFromAssemblyContaining<CertificateCreateValidator>();
 
         services.AddValidatorsFromAssemblyContaining<EducationUpdateValidator>();
+        services.AddValidatorsFromAssemblyContaining<EducationCreateValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<ExperienceUpdateValidator>();
+        services.AddValidatorsFromAssemblyContaining<ExperienceCreateValidator>();
 
         return services;
     }

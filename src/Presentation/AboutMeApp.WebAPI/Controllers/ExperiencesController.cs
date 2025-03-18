@@ -1,18 +1,18 @@
 ﻿using AboutMeApp.Application.Abstractions.Services;
-using AboutMeApp.Application.Dtos.Certificate;
 using AboutMeApp.Application.Dtos.Education;
+using AboutMeApp.Application.Dtos.Experience;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AboutMeApp.WebAPI.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class EducationsController : ControllerBase
+public class ExperiencesController : ControllerBase
 {
-    private IEducationService _educationService { get; }
-    public EducationsController(IEducationService educationService)
+    private IExperienceService _experienceService { get; }
+    public ExperiencesController(IExperienceService experienceService)
     {
-        _educationService = educationService ?? throw new ArgumentNullException(nameof(educationService));
+        _experienceService = experienceService ?? throw new ArgumentNullException(nameof(experienceService));
     }
 
     [HttpGet("all")]
@@ -21,14 +21,14 @@ public class EducationsController : ControllerBase
     [FromQuery] int pageSize = 10,
     [FromQuery] bool isPaginated = true)
     {
-        var response = await _educationService.GetAllAsync(pageNumber, pageSize, isPaginated);
+        var response = await _experienceService.GetAllAsync(pageNumber, pageSize, isPaginated);
         return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var response = await _educationService.GetByIdAsync(id);
+        var response = await _experienceService.GetByIdAsync(id);
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -39,28 +39,28 @@ public class EducationsController : ControllerBase
     [FromQuery] int pageSize = 10,
     [FromQuery] bool isPaginated = true)
     {
-        var response = await _educationService.SearchByNameAsync(name, pageNumber, pageSize, isPaginated);
+        var response = await _experienceService.SearchByNameAsync(name, pageNumber, pageSize, isPaginated);
         return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] EducationCreateDto educationCreateDto)
+    public async Task<IActionResult> Create([FromBody] ExperienceCreateDto experienceCreateDto)
     {
-        var response = await _educationService.CreateAsync(educationCreateDto);
+        var response = await _experienceService.CreateAsync(experienceCreateDto);
         return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] EducationUpdateDto educationUpdateDto)
+    public async Task<IActionResult> Update(Guid id, [FromBody] ExperienceUpdateDto experienceUpdateDto)
     {
-        var response = await _educationService.UpdateAsync(id, educationUpdateDto);
+        var response = await _experienceService.UpdateAsync(id, experienceUpdateDto);
         return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var response = await _educationService.DeleteAsync(id);
+        var response = await _experienceService.DeleteAsync(id);
         return StatusCode((int)response.StatusCode, response);
     }
 }

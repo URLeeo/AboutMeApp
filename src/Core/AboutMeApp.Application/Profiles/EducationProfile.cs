@@ -1,5 +1,5 @@
-﻿using AboutMeApp.Application.Dtos.Certificate;
-using AboutMeApp.Application.Dtos.Education;
+﻿using AboutMeApp.Application.Dtos.Education;
+using AboutMeApp.Common.Shared;
 using AboutMeApp.Domain.Entities;
 using AutoMapper;
 
@@ -12,5 +12,6 @@ public class EducationProfile : Profile
         CreateMap<Education, EducationGetDto>().ReverseMap();
         CreateMap<Education, EducationCreateDto>().ReverseMap();
         CreateMap<Education, EducationUpdateDto>().ReverseMap();
+        CreateMap(typeof(Pagination<>), typeof(Pagination<>));
     }
 }

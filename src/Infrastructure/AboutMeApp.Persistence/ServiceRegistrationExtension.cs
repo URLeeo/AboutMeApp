@@ -1,9 +1,9 @@
 ﻿using AboutMeApp.Application.Abstractions.Repositories;
 using AboutMeApp.Application.Abstractions.Services;
-using AboutMeApp.Application.Profiles;
 using AboutMeApp.Application.Validations.Certificate;
 using AboutMeApp.Application.Validations.Education;
 using AboutMeApp.Application.Validations.Experience;
+using AboutMeApp.Application.Validations.SocialMedia;
 using AboutMeApp.Domain.Entities;
 using AboutMeApp.Persistence.Contexts;
 using AboutMeApp.Persistence.Implementations.Repositories;
@@ -52,6 +52,9 @@ public static class ServiceRegistrationExtension
 
         services.AddValidatorsFromAssemblyContaining<ExperienceUpdateValidator>();
         services.AddValidatorsFromAssemblyContaining<ExperienceCreateValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<SocialMediaUpdateValidator>();
+        services.AddValidatorsFromAssemblyContaining<SocialMediaCreateValidator>();
 
         return services;
     }

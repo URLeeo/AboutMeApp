@@ -4,6 +4,7 @@ using AboutMeApp.Application.Validations.Certificate;
 using AboutMeApp.Application.Validations.Education;
 using AboutMeApp.Application.Validations.Experience;
 using AboutMeApp.Application.Validations.SocialMedia;
+using AboutMeApp.Application.Validations.Template;
 using AboutMeApp.Domain.Entities;
 using AboutMeApp.Persistence.Contexts;
 using AboutMeApp.Persistence.Implementations.Repositories;
@@ -45,6 +46,9 @@ public static class ServiceRegistrationExtension
         services.AddScoped<ISocialMediaRepository, SocialMediaRepository>();
         services.AddScoped<ISocialMediaService, SocialMediaService>();
 
+        services.AddScoped<ITemplateRepository, TemplateRepository>();
+        services.AddScoped<ITemplateService, TemplateService>();
+
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddValidatorsFromAssemblyContaining<CertificateUpdateValidator>();
@@ -58,6 +62,9 @@ public static class ServiceRegistrationExtension
 
         services.AddValidatorsFromAssemblyContaining<SocialMediaUpdateValidator>();
         services.AddValidatorsFromAssemblyContaining<SocialMediaCreateValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<TemplateUpdateValidator>();
+        services.AddValidatorsFromAssemblyContaining<TemplateCreateValidator>();
 
         return services;
     }

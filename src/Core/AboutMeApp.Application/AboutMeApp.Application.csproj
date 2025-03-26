@@ -16,7 +16,6 @@
   <ItemGroup>
     <Folder Include="Dtos\Identity\" />
     <Folder Include="Dtos\UserProfile\" />
-    <Folder Include="Dtos\Template\" />
   </ItemGroup>
 
   <ItemGroup>

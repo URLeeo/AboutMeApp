@@ -42,6 +42,9 @@ public static class ServiceRegistrationExtension
         services.AddScoped<IExperienceRepository, ExperienceRepository>();
         services.AddScoped<IExperienceService, ExperienceService>();
 
+        services.AddScoped<ISocialMediaRepository, SocialMediaRepository>();
+        services.AddScoped<ISocialMediaService, SocialMediaService>();
+
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         services.AddValidatorsFromAssemblyContaining<CertificateUpdateValidator>();

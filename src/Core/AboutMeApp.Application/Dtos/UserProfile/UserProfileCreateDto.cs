@@ -1,16 +1,14 @@
-﻿using AboutMeApp.Domain.Entities.Common;
+﻿using AboutMeApp.Domain.Entities;
 
-namespace AboutMeApp.Domain.Entities;
+namespace AboutMeApp.Application.Dtos.UserProfile;
 
-public class UserProfile : BaseEntity
+public class UserProfileCreateDto
 {
     public Guid UserId { get; set; }
-    public User User { get; set; }
     public string? Bio { get; set; }
     public string? ProfileImageUrl { get; set; }
-    public string? WebsiteUrl { get; set; } 
+    public string? WebsiteUrl { get; set; }
     public string? PhoneNumber { get; set; }
     public string? Location { get; set; }
     public Guid? TemplateId { get; set; }
-    public Template? Template { get; set; }
 }

@@ -22,6 +22,6 @@ public class SocialMediaCreateValidator : AbstractValidator<SocialMediaCreateDto
 
         RuleFor(x => x.UserProfileId)
             .NotEmpty()
-            .WithMessage("UserProfileId is required.");
+            .WithMessage("User Profile Id is required.");
     }
 }

@@ -41,6 +41,17 @@ public class UserProfileService : IUserProfileService
             };
         }
 
+        var userExists = await _userManager.FindByIdAsync(userProfileCreateDto.UserId.ToString());
+        if (userExists == null)
+        {
+            return new BaseResponse<UserProfileCreateDto>
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Message = "User does not exist.",
+                Data = null
+            };
+        }
+
         var existingProfile = await _userprofileRepository.GetByFilter(
             up => up.UserId == userProfileCreateDto.UserId && !up.IsDeleted,
             isTracking: false);

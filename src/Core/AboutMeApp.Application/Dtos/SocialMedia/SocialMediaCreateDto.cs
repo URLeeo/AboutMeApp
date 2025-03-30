@@ -2,7 +2,7 @@
 
 namespace AboutMeApp.Application.Dtos.SocialMedia;
 
-public class SocialMediaCreateDto
+public record SocialMediaCreateDto
 {
     public string? Platform { get; set; } // LinkedIn, GitHub ve s.
     public string? Url { get; set; } // Sosial media linki

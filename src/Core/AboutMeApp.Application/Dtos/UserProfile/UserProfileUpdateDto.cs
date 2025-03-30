@@ -1,6 +1,6 @@
 ﻿namespace AboutMeApp.Application.Dtos.UserProfile;
 
-public class UserProfileUpdateDto
+public record UserProfileUpdateDto
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Identity\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AboutMeApp.Common\AboutMeApp.Common.csproj" />
     <ProjectReference Include="..\AboutMeApp.Domain\AboutMeApp.Domain.csproj" />
   </ItemGroup>

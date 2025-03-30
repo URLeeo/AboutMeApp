@@ -1,6 +1,6 @@
 ﻿namespace AboutMeApp.Application.Dtos.Template;
 
-public class TemplateUpdateDto
+public record TemplateUpdateDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

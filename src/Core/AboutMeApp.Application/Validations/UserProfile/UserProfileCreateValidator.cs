@@ -31,7 +31,10 @@ public class UserProfileCreateValidator : AbstractValidator<UserProfileCreateDto
             .NotEmpty()
             .WithMessage("Phone Number is required.")
             .MaximumLength(24)
-            .WithMessage("Phone Number cannot exceed 24 characters.");
+            .WithMessage("Phone Number cannot exceed 24 characters.")
+            .Matches(@"^\d+$")
+            .WithMessage("Phone Number must contain only digits.");
+
 
         RuleFor(x => x.Location)
             .NotEmpty()

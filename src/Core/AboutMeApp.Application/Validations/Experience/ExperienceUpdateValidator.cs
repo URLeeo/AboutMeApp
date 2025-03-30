@@ -40,7 +40,7 @@ public class ExperienceUpdateValidator : AbstractValidator<ExperienceUpdateDto>
 
         RuleFor(x => x.UserProfileId)
             .NotEmpty()
-            .WithMessage("UserProfileId is required.");
+            .WithMessage("User Profile Id is required.");
     }
 }
 

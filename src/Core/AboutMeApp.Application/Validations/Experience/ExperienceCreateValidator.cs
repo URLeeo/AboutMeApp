@@ -36,6 +36,6 @@ public class ExperienceCreateValidator : AbstractValidator<ExperienceCreateDto>
 
         RuleFor(x => x.UserProfileId)
             .NotEmpty()
-            .WithMessage("UserProfileId is required.");
+            .WithMessage("User Profile Id is required.");
     }
 }

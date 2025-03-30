@@ -2,7 +2,7 @@
 
 namespace AboutMeApp.Application.Dtos.Experience;
 
-public class ExperienceUpdateDto
+public record ExperienceUpdateDto
 {
     public Guid Id { get; set; }
     public string CompanyName { get; set; } = null!;

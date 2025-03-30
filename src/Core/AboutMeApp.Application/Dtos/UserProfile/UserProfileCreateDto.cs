@@ -2,7 +2,7 @@
 
 namespace AboutMeApp.Application.Dtos.UserProfile;
 
-public class UserProfileCreateDto
+public record UserProfileCreateDto
 {
     public Guid UserId { get; set; }
     public string? Bio { get; set; }

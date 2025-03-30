@@ -1,8 +1,7 @@
 ﻿using AboutMeApp.Domain.Entities;
 
 namespace AboutMeApp.Application.Dtos.SocialMedia;
-
-public class SocialMediaGetDto
+public record SocialMediaGetDto
 {
     public Guid Id { get; set; }
     public string? Platform { get; set; } // LinkedIn, GitHub ve s.

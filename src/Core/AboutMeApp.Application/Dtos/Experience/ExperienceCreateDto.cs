@@ -2,7 +2,7 @@
 
 namespace AboutMeApp.Application.Dtos.Experience;
 
-public class ExperienceCreateDto
+public record ExperienceCreateDto
 {
     public string CompanyName { get; set; } = null!;
     public string Position { get; set; } = null!;

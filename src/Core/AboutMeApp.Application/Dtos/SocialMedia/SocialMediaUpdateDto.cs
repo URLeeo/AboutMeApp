@@ -2,7 +2,7 @@
 
 namespace AboutMeApp.Application.Dtos.SocialMedia;
 
-public class SocialMediaUpdateDto
+public record SocialMediaUpdateDto
 {
     public Guid Id { get; set; }
     public string? Platform { get; set; } // LinkedIn, GitHub ve s.

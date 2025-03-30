@@ -2,7 +2,7 @@
 
 namespace AboutMeApp.Application.Dtos.Education;
 
-public class EducationGetDto
+public record EducationGetDto
 {
     public Guid Id { get; set; }
     public string SchoolName { get; set; } = null!;

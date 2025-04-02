@@ -1,5 +1,6 @@
 ﻿using AboutMeApp.Application.Abstractions.Repositories;
 using AboutMeApp.Application.Abstractions.Services;
+using AboutMeApp.Application.Dtos.Certificate;
 using AboutMeApp.Application.Dtos.Education;
 using AboutMeApp.Application.Dtos.Experience;
 using AboutMeApp.Common.Shared;
@@ -16,15 +17,15 @@ namespace AboutMeApp.Persistence.Implementations.Services;
 public class ExperienceService : IExperienceService
 {
     private IExperienceRepository _experienceRepository { get; }
+    private IUserProfileRepository _userProfileRepository { get; }
     private IMapper _mapper { get; }
-    private UserManager<User> _userManager { get; }
     private IValidator<ExperienceCreateDto> _createValidator { get; }
     private IValidator<ExperienceUpdateDto> _updateValidator { get; }
-    public ExperienceService(IExperienceRepository experienceRepository, IMapper mapper, UserManager<User> userManager, IValidator<ExperienceCreateDto> createValidator, IValidator<ExperienceUpdateDto> updateValidator)
+    public ExperienceService(IExperienceRepository experienceRepository, IMapper mapper, IUserProfileRepository userProfileRepository, IValidator<ExperienceCreateDto> createValidator, IValidator<ExperienceUpdateDto> updateValidator)
     {
         _experienceRepository = experienceRepository;
+        _userProfileRepository = userProfileRepository;
         _mapper = mapper;
-        _userManager = userManager;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
     }
@@ -41,8 +42,8 @@ public class ExperienceService : IExperienceService
             };
         }
 
-        var userExists = await _userManager.FindByIdAsync(experienceCreateDto.UserProfileId.ToString());
-        if (userExists == null)
+        var userProfileExists = await _userProfileRepository.GetByIdAsync(experienceCreateDto.UserProfileId);
+        if (userProfileExists == null)
         {
             return new BaseResponse<ExperienceCreateDto>
             {

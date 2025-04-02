@@ -203,8 +203,8 @@ public class UserProfileService : IUserProfileService
 
         IQueryable<UserProfile> query = _userprofileRepository.GetAll(
             expression: up => !up.IsDeleted &&
-                (up.User.FirstName.ToLower().Contains(name.ToLower()) ||
-                 up.User.LastName.ToLower().Contains(name.ToLower())),
+                (up.User.Name.ToLower().Contains(name.ToLower()) ||
+                 up.User.Surname.ToLower().Contains(name.ToLower())),
             includes: new[] { "User" }
         );
 

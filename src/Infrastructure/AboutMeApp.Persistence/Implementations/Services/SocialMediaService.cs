@@ -16,15 +16,15 @@ namespace AboutMeApp.Persistence.Implementations.Services;
 public class SocialMediaService : ISocialMediaService
 {
     private ISocialMediaRepository _socialmediaRepository { get; }
+    private IUserProfileRepository _userProfileRepository { get; }
     private IMapper _mapper { get; }
-    private UserManager<User> _userManager { get; }
     private IValidator<SocialMediaCreateDto> _createValidator { get; }
     private IValidator<SocialMediaUpdateDto> _updateValidator { get; }
-    public SocialMediaService(ISocialMediaRepository socialmediaRepository, IMapper mapper, UserManager<User> userManager, IValidator<SocialMediaCreateDto> createValidator, IValidator<SocialMediaUpdateDto> updateValidator)
+    public SocialMediaService(ISocialMediaRepository socialmediaRepository, IUserProfileRepository userProfileRepository, IMapper mapper, IValidator<SocialMediaCreateDto> createValidator, IValidator<SocialMediaUpdateDto> updateValidator)
     {
         _socialmediaRepository = socialmediaRepository;
+        _userProfileRepository = userProfileRepository;
         _mapper = mapper;
-        _userManager = userManager;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
     }
@@ -41,8 +41,8 @@ public class SocialMediaService : ISocialMediaService
             };
         }
 
-        var userExists = await _userManager.FindByIdAsync(socialmediaCreateDto.UserProfileId.ToString());
-        if (userExists == null)
+        var userProfileExists = await _userProfileRepository.GetByIdAsync(socialmediaCreateDto.UserProfileId);
+        if (userProfileExists == null)
         {
             return new BaseResponse<SocialMediaCreateDto>
             {

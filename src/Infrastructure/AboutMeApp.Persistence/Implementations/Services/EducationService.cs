@@ -15,15 +15,15 @@ namespace AboutMeApp.Persistence.Implementations.Services;
 public class EducationService : IEducationService
 {
     private IEducationRepository _educationRepository { get; }
+    private IUserProfileRepository _userProfileRepository { get; }
     private IMapper _mapper { get; }
-    private UserManager<User> _userManager { get; }
     private IValidator<EducationCreateDto> _createValidator { get; }
     private IValidator<EducationUpdateDto> _updateValidator { get; }
-    public EducationService(IEducationRepository educationRepository, IMapper mapper, UserManager<User> userManager, IValidator<EducationCreateDto> createValidator, IValidator<EducationUpdateDto> updateValidator)
+    public EducationService(IEducationRepository educationRepository, IMapper mapper, IUserProfileRepository userProfileRepository, IValidator<EducationCreateDto> createValidator, IValidator<EducationUpdateDto> updateValidator)
     {
         _educationRepository = educationRepository;
+        _userProfileRepository = userProfileRepository;
         _mapper = mapper;
-        _userManager = userManager;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
     }
@@ -41,8 +41,8 @@ public class EducationService : IEducationService
             };
         }
 
-        var userExists = await _userManager.FindByIdAsync(educationCreateDto.UserProfileId.ToString());
-        if (userExists == null)
+        var userProfileExists = await _userProfileRepository.GetByIdAsync(educationCreateDto.UserProfileId);
+        if (userProfileExists == null)
         {
             return new BaseResponse<EducationCreateDto>
             {

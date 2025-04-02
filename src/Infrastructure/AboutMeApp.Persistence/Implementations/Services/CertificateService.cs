@@ -1,6 +1,7 @@
 ﻿using AboutMeApp.Application.Abstractions.Repositories;
 using AboutMeApp.Application.Abstractions.Services;
 using AboutMeApp.Application.Dtos.Certificate;
+using AboutMeApp.Application.Dtos.SocialMedia;
 using AboutMeApp.Common.Shared;
 using AboutMeApp.Domain.Entities;
 using AutoMapper;
@@ -14,19 +15,18 @@ namespace AboutMeApp.Persistence.Implementations.Services;
 public class CertificateService : ICertificateService
 {
     private ICertificateRepository _certificateRepository { get; }
+    private IUserProfileRepository _userProfileRepository { get; }
     private IMapper _mapper { get; }
-
-    private UserManager<User> _userManager { get; }
     private IValidator<CertificateCreateDto> _createValidator { get; }
     private IValidator<CertificateUpdateDto> _updateValidator { get; }
 
-    public CertificateService(ICertificateRepository certificateRepository, IMapper mapper, IValidator<CertificateCreateDto> createValidator, IValidator<CertificateUpdateDto> updateValidator, UserManager<User> userManager)
+    public CertificateService(ICertificateRepository certificateRepository, IUserProfileRepository userProfileRepository, IMapper mapper, IValidator<CertificateCreateDto> createValidator, IValidator<CertificateUpdateDto> updateValidator)
     {
         _certificateRepository = certificateRepository;
+        _userProfileRepository = userProfileRepository;
         _mapper = mapper;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
-        _userManager = userManager;
 
     }
     public async Task<BaseResponse<CertificateCreateDto>> CreateAsync(CertificateCreateDto certificateCreateDto)
@@ -42,13 +42,13 @@ public class CertificateService : ICertificateService
             };
         }
 
-        var userExists = await _userManager.FindByIdAsync(certificateCreateDto.UserId.ToString());
-        if (userExists == null)
+        var userProfileExists = await _userProfileRepository.GetByIdAsync(certificateCreateDto.UserProfileId);
+        if (userProfileExists == null)
         {
             return new BaseResponse<CertificateCreateDto>
             {
-                StatusCode = HttpStatusCode.BadRequest,
-                Message = "User does not exist.",
+                StatusCode = HttpStatusCode.NotFound,
+                Message = "User profile does not exist.",
                 Data = null
             };
         }
@@ -114,7 +114,7 @@ public class CertificateService : ICertificateService
 
         IQueryable<Certificate> query = _certificateRepository.GetAll(
             expression: c => !c.IsDeleted,
-            includes: new[] { "User" });
+            includes: new[] { "UserProfile" });
 
         int totalItems = await query.CountAsync();
 
@@ -127,7 +127,7 @@ public class CertificateService : ICertificateService
         List<CertificateGetDto> certificateGetDtos = await query.Select(c => new CertificateGetDto
         {
             Id = c.Id,
-            UserId = c.User.Id,
+            UserProfileId = c.UserProfile.Id,
             Title = c.Title,
             Issuer = c.Issuer,
             IssueDate = c.IssueDate,
@@ -154,7 +154,7 @@ public class CertificateService : ICertificateService
     {
         var certificate = await _certificateRepository.GetByFilter(
             expression: c => c.Id == id && !c.IsDeleted,
-            includes: new[] { "User" });
+            includes: new[] { "UserProfile" });
 
         if (certificate == null)
         {
@@ -196,7 +196,7 @@ public class CertificateService : ICertificateService
 
         IQueryable<Certificate> query = _certificateRepository.GetAll(
             expression: c => !c.IsDeleted && EF.Functions.Like(c.Title, $"%{name}%"),
-            includes: new[] { "User" });
+            includes: new[] { "UserProfile" });
 
         int totalItems = await query.CountAsync();
 
@@ -219,7 +219,7 @@ public class CertificateService : ICertificateService
         List<CertificateGetDto> certificateGetDtos = await query.Select(c => new CertificateGetDto
         {
             Id = c.Id,
-            UserId = c.User.Id,
+            UserProfileId = c.UserProfile.Id,
             Title = c.Title,
             Issuer = c.Issuer,
             IssueDate = c.IssueDate,

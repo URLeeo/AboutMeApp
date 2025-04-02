@@ -2,7 +2,7 @@
 
 public record CertificateCreateDto
 {
-    public Guid UserId { get; set; }
+    public Guid UserProfileId { get; set; }
     public string Title { get; set; } = null!;
     public string Issuer { get; set; } = null!;
     public DateTime IssueDate { get; set; }

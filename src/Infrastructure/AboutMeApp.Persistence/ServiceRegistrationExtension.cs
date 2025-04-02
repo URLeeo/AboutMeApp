@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace AboutMeApp.Persistence;
 
 public static class ServiceRegistrationExtension
@@ -72,6 +73,9 @@ public static class ServiceRegistrationExtension
 
         services.AddValidatorsFromAssemblyContaining<UserProfileUpdateValidator>();
         services.AddValidatorsFromAssemblyContaining<UserProfileCreateValidator>();
+
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IRoleService, RoleService>();
 
         return services;
     }

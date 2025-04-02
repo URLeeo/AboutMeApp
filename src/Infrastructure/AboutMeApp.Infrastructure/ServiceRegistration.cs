@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AboutMeApp.Infrastructure;
 
-public static class ServiceRegistration
+public static class ServiceRegistrationExtension
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -38,6 +38,7 @@ public static class ServiceRegistration
         });
 
         services.AddScoped<IJwtService, JwtService>();
+
         return services;
     }
-}
+};

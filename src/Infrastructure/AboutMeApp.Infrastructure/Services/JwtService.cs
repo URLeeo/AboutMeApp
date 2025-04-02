@@ -11,10 +11,12 @@ namespace AboutMeApp.Infrastructure.Services;
 public class JwtService : IJwtService
 {
     private readonly IConfiguration _configuration;
+
     public JwtService(IConfiguration configuration)
     {
         _configuration = configuration;
     }
+
     public string GenerateAccessToken(IEnumerable<Claim> claims)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
@@ -25,7 +27,7 @@ public class JwtService : IJwtService
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["AccessTokenExpirationHours"])),
+            expires: DateTime.UtcNow.AddHours(Convert.ToDouble(jwtSettings["AccessTokenExpirationHours"])),
             signingCredentials: creds
         );
 

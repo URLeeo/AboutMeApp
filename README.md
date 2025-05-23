@@ -77,7 +77,16 @@ Here is a preview of the API endpoints using Swagger UI:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/URLeeo/aboutmeapi.git
+git clone https://github.com/URLeeo/AboutMeApp
+
+# 2. Navigate to project folder
+cd "project_name"
+
+# 3. Set your DB connection string in appsettings.json or .env
+
+# 4. Run the API
+dotnet run
+
 
 # 2. Navigate to project folder
 cd aboutmeapi

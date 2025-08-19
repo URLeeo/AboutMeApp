@@ -5,6 +5,7 @@ using AboutMeApp.Domain.Entities;
 using AboutMeApp.Infrastructure;
 using AboutMeApp.Infrastructure.Services;
 using AboutMeApp.Persistence;
+using Hangfire;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
@@ -48,6 +49,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddHangfireServer();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.User.AllowedUserNameCharacters =
@@ -55,7 +61,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -82,6 +88,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseAuthentication();
+
+app.UseHangfireDashboard("/hangfire");
 
 app.UseAuthorization();
 

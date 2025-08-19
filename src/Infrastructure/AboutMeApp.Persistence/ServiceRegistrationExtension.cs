@@ -11,6 +11,7 @@ using AboutMeApp.Persistence.Contexts;
 using AboutMeApp.Persistence.Implementations.Repositories;
 using AboutMeApp.Persistence.Implementations.Services;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +35,8 @@ public static class ServiceRegistrationExtension
             opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-";
         })
         .AddRoles<Role>()
-        .AddEntityFrameworkStores<AboutMeAppDbContext>();
+        .AddEntityFrameworkStores<AboutMeAppDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddScoped<ICertificateRepository, CertificateRepository>();
         services.AddScoped<ICertificateService, CertificateService>();
@@ -76,6 +78,7 @@ public static class ServiceRegistrationExtension
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         return services;
     }

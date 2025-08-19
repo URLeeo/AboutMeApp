@@ -4,6 +4,7 @@ using AboutMeApp.Application.Validations.Identity;
 using AboutMeApp.Common.Shared;
 using AboutMeApp.Domain.Entities;
 using AutoMapper;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,13 +19,15 @@ public class AuthService : IAuthService
     private UserManager<User> _userManager { get; }
     private IMapper _mapper { get; }
     private IConfiguration _configuration { get; }
+    private IEmailService _emailService { get; }
 
-    public AuthService(IJwtService jwtService, UserManager<User> userManager, IMapper mapper, IConfiguration configuration)
+    public AuthService(IJwtService jwtService, UserManager<User> userManager, IMapper mapper, IConfiguration configuration, IEmailService emailService)
     {
         _jwtService = jwtService;
         _userManager = userManager;
         _mapper = mapper;
         _configuration = configuration;
+        _emailService = emailService;
     }
     public async Task<BaseResponse<object>> LoginAsync(LoginDto loginDto)
     {
@@ -48,6 +51,17 @@ public class AuthService : IAuthService
                 Message = "Invalid email or password."
             };
         }
+
+        if (!user.EmailConfirmed)
+        {
+            return new BaseResponse<object>
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Message = "Please confirm your email address before logging in.",
+                Data = null
+            };
+        }
+
         var claims = new List<Claim>();
         claims.AddRange(
         [
@@ -65,6 +79,8 @@ public class AuthService : IAuthService
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(refreshTokenExpiryTime);
         await _userManager.UpdateAsync(user);
+
+
         return new BaseResponse<object>
         {
             StatusCode = HttpStatusCode.OK,
@@ -166,9 +182,20 @@ public class AuthService : IAuthService
         }
         await _userManager.AddToRoleAsync(user, "user");
 
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var encodedToken = WebUtility.UrlEncode(token);
+        var confirmationLink = $"https://localhost:5001/api/auths/confirm-email?userId={user.Id}&token={encodedToken}";
+
+
+        BackgroundJob.Enqueue<IEmailService>(emailService =>
+            emailService.SendEmailAsync(user.Email, "Confirm your email",
+                $"<p>Hello {user.UserName},</p>" +
+                $"<p>Please click the link below to confirm your email address:</p>" +
+                $"<a href='{confirmationLink}'>Confirm My Email</a>"));
+
         return new BaseResponse<object>
         {
-            Message = "User registered successfully.",
+            Message = "User registered successfully. Please check your email to confirm.",
             StatusCode = HttpStatusCode.Created
         };
     }
